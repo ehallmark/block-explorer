@@ -2,6 +2,12 @@
 
 This repository contains code for provisioning an application in Google Cloud that contains a dashboard for viewing transactions on Ethereum, Polygon, and Binance Smart Chain for a given account address.
 
+An ETL job runs hourly that pulls data from the following APIs:
+
++ Ethereum - https://api.etherscan.io/api
++ Binance Smart Chain - https://api.bscscan.com/api
++ Polygon - https://api.polygonscan.com/api
+
 The dashboard is currently hosted here: https://bsc-explorer.evanhallmark.com
 
 ## Technology Overview
