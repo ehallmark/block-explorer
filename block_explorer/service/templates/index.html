@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <div class="container">
+        {# application content needs to be provided in the app_content block #}
+        {% block app_content %}
+        {% for network, network_data in data.items() %}
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <h3>{{ network[0:1].upper()+network[1:] }} Network</h3>
+                    <div class="col-sm-6">
+                        <canvas id="chart-{{ network }}"></canvas>
+                    </div>
+                    <div class="col-sm-6">
+                        <canvas id="chart2-{{ network }}"></canvas>
+                    </div>
+                    <script>
+                        const Http{{ network }} = new XMLHttpRequest();
+                        Http{{ network }}.open("POST", '/charts/{{ network }}/tokenChart');
+                        Http{{ network }}.send();
+
+                        Http{{ network }}.onreadystatechange = function() {
+                            if (this.readyState==4 && this.status==200) {
+                                var myChart = new Chart(
+                                    document.getElementById("chart-{{ network }}"),
+                                    JSON.parse(Http{{ network }}.responseText)
+                                );
+                            }
+                        }
+
+                        const Http2{{ network }} = new XMLHttpRequest();
+                        Http2{{ network }}.open("POST", '/charts/{{ network }}/txnTimeline');
+                        Http2{{ network }}.send();
+
+                        Http2{{ network }}.onreadystatechange = function() {
+                            if (this.readyState==4 && this.status==200) {
+                                var myChart = new Chart(
+                                    document.getElementById("chart2-{{ network }}"),
+                                    JSON.parse(Http2{{ network }}.responseText)
+                                );
+                            }
+                        }
+                    </script>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% endblock %}
+    </div>
+{% endblock %}

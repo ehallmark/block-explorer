@@ -1,0 +1,12 @@
+{% extends 'initial.html' %}
+
+{% block title %}
+    {% if title %}{{ title }}{% else %}Blockchain Explorer{% endif %}
+{% endblock %}
+
+{% block navbar %}
+    <nav class="my-navbar navbar navbar-dark navbar-expand-md fixed-top bg-dark">
+        <!-- Brand and toggle get grouped for better mobile display -->
+      <a class="navbar-brand text-center center-block" style="float: none;" href="#">Blockchain Explorer</a>
+    </nav>
+{% endblock %}

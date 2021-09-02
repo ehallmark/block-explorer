@@ -1,0 +1,10 @@
+**.env
+
+**.tfstate
+terraform/.terraform/
+
+**.pyc
+
+**__pycache__/
+
+.sql_password
