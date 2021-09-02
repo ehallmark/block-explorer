@@ -24,7 +24,7 @@ def transform(data: Tuple[Dict[str, Any], Dict[str, Any]]) -> List[pd.DataFrame]
     ) for d in data]
 
 
-def load(transformed_data: pd.DataFrame, engine: Engine, network: str) -> Optional[int]:
+def load(transformed_data: List[pd.DataFrame], engine: Engine, network: str) -> Optional[int]:
     latest_blocks = []
     if len(transformed_data[0]) > 0:
         transformed_data[0].set_index('hash', inplace=True)
