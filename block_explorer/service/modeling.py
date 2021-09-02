@@ -15,6 +15,8 @@ def load_data() -> Dict[str, Any]:
             table_name=f'transfers',
             con=engine,
         ).set_index('hash')
+    engine.dispose()
+
     network_dfs = df.groupby('network')
     data = {}
     for network in NETWORKS:

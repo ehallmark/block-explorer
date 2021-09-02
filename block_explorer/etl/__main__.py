@@ -101,3 +101,5 @@ if __name__ == '__main__':
         print('Reached block %s' % new_last_block)
         set_last_block(new_last_block, sql_engine, network)
         time.sleep(1)
+
+    sql_engine.dispose()

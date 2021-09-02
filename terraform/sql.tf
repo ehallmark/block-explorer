@@ -4,7 +4,7 @@ resource "google_sql_database_instance" "instance" {
   region = var.region
   database_version = "POSTGRES_13"
   settings {
-    tier              = "db-f1-micro"
+    tier              = "db-g1-small"
     disk_autoresize   = true
     ip_configuration {
       require_ssl = false
