@@ -1,6 +1,6 @@
 # Blockchain Explorer
 
-This repository contains code for provisioning an application in Google Cloud that contains a dashboard for viewing transactions on Ethereum, Polygon, and Binance Smart Chain for a given account address.
+This repository contains code for provisioning an application in Google Cloud that contains a dashboard for viewing transactions and token balances on Ethereum, Polygon, and Binance Smart Chain for a given account address.
 
 An ETL job runs hourly that pulls data from the following APIs:
 
@@ -26,9 +26,20 @@ The dashboard is currently hosted here: https://bsc-explorer.evanhallmark.com
 
 ### Backend
 
-+ Python
-+ Flask
-+ Pandas
+#### ETL job
+
++ Python [block_explorer/etl/\_\_main\_\_.py](block_explorer/etl/__main__.py)
+
+    + SQLAlchemy
+    + Requests
+    + Pandas
+  
+#### Server
+
++ Python [block_explorer/service/server.py](block_explorer/service/server.py)
+  
+    + Flask
+    + Pandas
 
 ### Frontend
 
