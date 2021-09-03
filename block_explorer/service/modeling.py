@@ -13,6 +13,28 @@ NETWORKS = {
 }
 
 
+COLOR_SCHEME = {
+    'backgroundColor': [
+      'rgba(54, 162, 235, 0.2)',
+      'rgba(255, 99, 132, 0.2)',
+      'rgba(255, 159, 64, 0.2)',
+      'rgba(255, 205, 86, 0.2)',
+      'rgba(75, 192, 192, 0.2)',
+      'rgba(153, 102, 255, 0.2)',
+      'rgba(201, 203, 207, 0.2)'
+    ],
+    'borderColor': [
+      'rgb(54, 162, 235)',
+      'rgb(255, 99, 132)',
+      'rgb(255, 159, 64)',
+      'rgb(255, 205, 86)',
+      'rgb(75, 192, 192)',
+      'rgb(153, 102, 255)',
+      'rgb(201, 203, 207)'
+    ]
+}
+
+
 def load_data() -> Dict[str, Any]:
     engine = create_engine(DATABASE_URL)
     df = pd.read_sql_table(
@@ -52,7 +74,7 @@ def load_data() -> Dict[str, Any]:
         network_data['numWithdrawals'] = withdrawals.shape[0]
         network_data['depositsValue'] = deposits[['value']].astype(float).sum()['value']
         network_data['withdrawalsValue'] = withdrawals[['value']].astype(float).sum()['value']
-
+        network_data['pretty_name'] = network[0:1].upper()+network[1:] if network != 'bsc' else 'Binance Smart Chain'
         deposited_tokens_df = deposits.groupby('tokenSymbol')
         withdrawn_tokens_df = withdrawals.groupby('tokenSymbol')
 
@@ -83,14 +105,16 @@ def load_data() -> Dict[str, Any]:
 
         tokens = sorted(list(net_balances.keys()), key=lambda x: net_balances[x], reverse=True)
         network_data['tokenChart'] = json.dumps({
-          'type': 'bar',
-          'data': {
-              'labels': tokens,
-              'datasets': [{
-                'label': 'Current Balance',
-                'data': [net_balances[t] for t in tokens],
-                'borderWidth': 1
-              }]
+            'type': 'bar',
+            'data': {
+                'labels': tokens,
+                'datasets': [{
+                    'label': 'Current Balance',
+                    'data': [net_balances[t] for t in tokens],
+                    'borderWidth': 1,
+                    'borderColor': [COLOR_SCHEME['borderColor'][i % 7] for i in range(len(tokens))],
+                    'backgroundColor': [COLOR_SCHEME['backgroundColor'][i % 7] for i in range(len(tokens))]
+                }]
             },
             'options': {
                 'plugins': {
@@ -104,14 +128,16 @@ def load_data() -> Dict[str, Any]:
 
         dates = sorted(list(transaction_dates.keys()))
         network_data['txnTimeline'] = json.dumps({
-          'type': 'line',
-          'data': {
-              'labels': dates,
-              'datasets': [{
-                'label': 'Number of Transactions',
-                'data': [transaction_dates[date] for date in dates],
-                'borderWidth': 1
-              }]
+            'type': 'line',
+            'data': {
+                'labels': dates,
+                'datasets': [{
+                    'label': 'Number of Transactions',
+                    'data': [transaction_dates[date] for date in dates],
+                    'borderWidth': 1,
+                    'borderColor': [COLOR_SCHEME['borderColor'][0] for i in range(len(dates))],
+                    'backgroundColor': [COLOR_SCHEME['backgroundColor'][0] for i in range(len(dates))]
+                }]
             },
             'options': {
                 'plugins': {

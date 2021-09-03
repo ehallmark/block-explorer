@@ -5,49 +5,60 @@
     <div class="container">
         {# application content needs to be provided in the app_content block #}
         {% block app_content %}
-        {% for network, network_data in data.items() %}
+
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            {% for network, network_data in data.items() %}
+                <li role="presentation"><a href="#tab-{{ network }}" class="{% if network=='ethereum' %} active {% endif %}" aria-controls="tab-{{ network }}" role="tab" data-toggle="tab">{{ network_data['pretty_name'] }}</a></li>
+            {% endfor %}
+        </ul>
+
         <div class="row">
             <div class="col-12">
-                <div class="card">
-                    <h3>{{ network[0:1].upper()+network[1:] }} Network (1 {{ network_data['symbol'] }} = ${{ network_data['price'] }})</h3>
-                    <h4>Current Balance: {{ '{:.4f} {} (${:.2f})'.format(network_data['amount'],network_data['symbol'], network_data['amount']*network_data['price']) }}</h4>
-                    <div class="col-sm-6">
-                        <canvas id="chart-{{ network }}"></canvas>
-                    </div>
-                    <div class="col-sm-6">
-                        <canvas id="chart2-{{ network }}"></canvas>
-                    </div>
-                    <script>
-                        const Http{{ network }} = new XMLHttpRequest();
-                        Http{{ network }}.open("POST", '/charts/{{ network }}/tokenChart');
-                        Http{{ network }}.send();
+                <div class="tab-content">
+                {% for network, network_data in data.items() %}
+                    <div role="tabpanel" class="tab-pane {% if network=='ethereum' %} active {% endif %}" id="tab-{{ network }}">
 
-                        Http{{ network }}.onreadystatechange = function() {
-                            if (this.readyState==4 && this.status==200) {
-                                var myChart = new Chart(
-                                    document.getElementById("chart-{{ network }}"),
-                                    JSON.parse(Http{{ network }}.responseText)
-                                );
+                        <h3>{{ network_data['pretty_name'] }} Network (1 {{ network_data['symbol'] }} = ${{ network_data['price'] }})</h3>
+                        <h4>Current Balance: {{ '{:.4f} {} (${:.2f})'.format(network_data['amount'],network_data['symbol'], network_data['amount']*network_data['price']) }}</h4>
+                        <div class="col-sm-6">
+                            <canvas id="chart-{{ network }}"></canvas>
+                        </div>
+                        <div class="col-sm-6">
+                            <canvas id="chart2-{{ network }}"></canvas>
+                        </div>
+                        <script>
+                            const Http{{ network }} = new XMLHttpRequest();
+                            Http{{ network }}.open("POST", '/charts/{{ network }}/tokenChart');
+                            Http{{ network }}.send();
+
+                            Http{{ network }}.onreadystatechange = function() {
+                                if (this.readyState==4 && this.status==200) {
+                                    var myChart = new Chart(
+                                        document.getElementById("chart-{{ network }}"),
+                                        JSON.parse(Http{{ network }}.responseText)
+                                    );
+                                }
                             }
-                        }
 
-                        const Http2{{ network }} = new XMLHttpRequest();
-                        Http2{{ network }}.open("POST", '/charts/{{ network }}/txnTimeline');
-                        Http2{{ network }}.send();
+                            const Http2{{ network }} = new XMLHttpRequest();
+                            Http2{{ network }}.open("POST", '/charts/{{ network }}/txnTimeline');
+                            Http2{{ network }}.send();
 
-                        Http2{{ network }}.onreadystatechange = function() {
-                            if (this.readyState==4 && this.status==200) {
-                                var myChart = new Chart(
-                                    document.getElementById("chart2-{{ network }}"),
-                                    JSON.parse(Http2{{ network }}.responseText)
-                                );
+                            Http2{{ network }}.onreadystatechange = function() {
+                                if (this.readyState==4 && this.status==200) {
+                                    var myChart = new Chart(
+                                        document.getElementById("chart2-{{ network }}"),
+                                        JSON.parse(Http2{{ network }}.responseText)
+                                    );
+                                }
                             }
-                        }
-                    </script>
+                        </script>
+                    </div>
+                {% endfor %}
                 </div>
             </div>
         </div>
-        {% endfor %}
         {% endblock %}
     </div>
 {% endblock %}
