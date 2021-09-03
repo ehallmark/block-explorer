@@ -16,7 +16,7 @@ resource "kubernetes_cron_job" "bsc-explorer" {
   spec {
     concurrency_policy            = "Forbid"
     failed_jobs_history_limit     = 5
-    schedule                      = "0 * * * *"
+    schedule                      = "*/5 * * * *"
     starting_deadline_seconds     = 10
     successful_jobs_history_limit = 10
     job_template {

@@ -2,7 +2,7 @@
 
 This repository contains code for provisioning an application in Google Cloud that contains a dashboard for viewing transactions and token balances on Ethereum, Polygon, and Binance Smart Chain for a given account address.
 
-An ETL job runs hourly that pulls data from the following APIs:
+An ETL job runs every 5 minutes that pulls data from the following APIs:
 
 + Ethereum - https://api.etherscan.io/api
 + Binance Smart Chain - https://api.bscscan.com/api
@@ -18,7 +18,7 @@ The dashboard is currently hosted here: https://bsc-explorer.evanhallmark.com
   
     + Service Namespace - contains a K8s Deployment resource and Service resource for hosting the Python Flask webserver
     
-    + ETL Namespace - contains a K8s CronJob that runs the ETL process on an hourly cadence
+    + ETL Namespace - contains a K8s CronJob that runs the ETL process every 5 minutes
 
     + Load Balancer for exposing public endpoint
     

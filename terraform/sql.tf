@@ -14,7 +14,13 @@ resource "google_sql_database_instance" "instance" {
         name = "allow-all"
       }
     }
+    database_flags {
+      name = "max_connections"
+      value = "30000"
+    }
+
   }
+
   deletion_protection = false
 }
 
