@@ -9,7 +9,8 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    <h3>{{ network[0:1].upper()+network[1:] }} Network</h3>
+                    <h3>{{ network[0:1].upper()+network[1:] }} Network (1 {{ network_data['symbol'] }} = ${{ network_data['price'] }})</h3>
+                    <h4>Current Balance: {{ '{:.4f} {} (${:.2f})'.format(network_data['amount'],network_data['symbol'], network_data['amount']*network_data['price']) }}</h4>
                     <div class="col-sm-6">
                         <canvas id="chart-{{ network }}"></canvas>
                     </div>

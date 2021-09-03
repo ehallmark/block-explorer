@@ -6,26 +6,44 @@ from typing import Dict, Any
 from datetime import datetime
 
 
-NETWORKS = ['ethereum', 'bsc', 'polygon']
+NETWORKS = {
+    'ethereum': 'ETH',
+    'bsc': 'BNB',
+    'polygon': 'MATIC'
+}
 
 
 def load_data() -> Dict[str, Any]:
     engine = create_engine(DATABASE_URL)
     df = pd.read_sql_table(
-            table_name=f'transfers',
-            con=engine,
-        ).set_index('hash')
+        table_name='transfers',
+        con=engine,
+    ).set_index('hash')
+
+    balances = pd.read_sql_table(
+        table_name='balances',
+        con=engine,
+    ).set_index('network')
+
+    prices = pd.read_sql_table(
+        table_name='prices',
+        con=engine,
+    ).set_index('network')
+
     engine.dispose()
 
     network_dfs = df.groupby('network')
     data = {}
-    for network in NETWORKS:
+    for network, symbol in NETWORKS.items():
         network_data = {}
         data[network] = network_data
         tokens_acquired = {}
         tokens_sold = {}
+        network_data['symbol'] = symbol
         network_data['acquired'] = tokens_acquired
         network_data['sold'] = tokens_sold
+        network_data['amount'] = balances.loc[network]['amount']
+        network_data['price'] = prices.loc[network]['price']
         group_df = network_dfs.get_group(network)
         network_data['totalGasUsed'] = group_df[['gasUsed']].astype(float).sum()['gasUsed']
         deposits = group_df[group_df.to == ACCOUNT_ID.lower()]
@@ -56,7 +74,9 @@ def load_data() -> Dict[str, Any]:
             decimals = token_df[['tokenDecimal']].astype(int).tokenDecimal.values.tolist()[0]
             tokens_sold[token] = token_df[['value']].astype(float).sum()['value'] / (10 ** decimals)
 
-        net_balances = {}
+        net_balances = {
+            symbol: network_data['amount']
+        }
         network_data['balance'] = net_balances
         for token, amount in tokens_acquired.items():
             net_balances[token] = amount - tokens_sold.get(token, 0)
